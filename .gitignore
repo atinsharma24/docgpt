@@ -1,0 +1,55 @@
+# Environment files with secrets
+.env
+*.env
+
+# Python cache and bytecode files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment folders (if you use venv or similar)
+venv/
+env/
+.env/
+
+# Logs
+*.log
+
+# Database files (if local)
+*.sqlite3
+
+# IDE/editor config files (common ones)
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Node modules (if you have any frontend)
+node_modules/
+
+# Build output folders
+dist/
+build/
+
+# Coverage reports (if using pytest-cov or similar)
+htmlcov/
+.coverage
+
+# Byte-compiled / optimized / DLL files
+*.so
+*.dll
+*.dylib
+
+# JetBrains IDEs
+*.iml
+
+# Python wheel files
+*.whl
+
+# Temporary files created by editors or OS
+*.swp
+*~
