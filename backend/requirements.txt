@@ -1,0 +1,7 @@
+Django>=5.0
+djangorestframework
+celery
+redis
+openai
+langchain
+psycopg2-binary  # PostgreSQL driver
