@@ -1,0 +1,35 @@
+import React, { useState } from 'react';
+import { askQuestion } from '../api';
+
+export default function AskDocument() {
+  const [question, setQuestion] = useState('');
+  const [answer, setAnswer] = useState(null);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!question) return alert('Please enter a question.');
+
+    try {
+      const data = await askQuestion(question);
+      setAnswer(data);
+    } catch (err) {
+      setAnswer({ error: 'Question failed' });
+    }
+  };
+
+  return (
+    <div>
+      <h2>Ask Document</h2>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          value={question}
+          onChange={e => setQuestion(e.target.value)}
+          placeholder="Enter your question"
+        />
+        <button type="submit">Ask</button>
+      </form>
+      {answer && <pre>{JSON.stringify(answer, null, 2)}</pre>}
+    </div>
+  );
+}
