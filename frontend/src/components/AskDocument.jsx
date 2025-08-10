@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { askQuestion } from '../api';
+import { askQuestion } from '../api/api';
 
 export default function AskDocument() {
   const [question, setQuestion] = useState('');

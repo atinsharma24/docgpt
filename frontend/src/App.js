@@ -1,7 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import React from 'react';
-import { BrowserRouter as Router, Route, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 
 import DocumentUpload from './components/DocumentUpload';
 import AskDocument from './components/AskDocument';

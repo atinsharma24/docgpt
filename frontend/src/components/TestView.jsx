@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { testApi } from '../api';
+import { testApi } from '../api/api';
 
 export default function TestView() {
     const [result, setResult] = useState(null);
