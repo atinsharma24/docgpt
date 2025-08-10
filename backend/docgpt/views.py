@@ -18,7 +18,10 @@ class TestView(APIView):
         return Response({"message": "Hello from DocGPT!"})
 
 
-openai.api_key = settings.OPENAI_API_KEY
+# Initialize OpenAI client (only if API key is available)
+client = None
+if hasattr(settings, 'OPENAI_API_KEY') and settings.OPENAI_API_KEY:
+    client = openai.OpenAI(api_key=settings.OPENAI_API_KEY)
 
 class AskDocumentView(APIView):
     def post(self, request):
@@ -38,15 +41,20 @@ class AskDocumentView(APIView):
             text += page.extract_text() + "\n"
 
         # Send to OpenAI
-        prompt = f"Answer the following question based on the document:\n\nDocument:\n{text}\n\nQuestion: {question}"
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0
-        )
-
-        answer = response['choices'][0]['message']['content']
-        return Response({"answer": answer})
+        if not client:
+            return Response({"error": "OpenAI API key not configured"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        try:
+            prompt = f"Answer the following question based on the document:\n\nDocument:\n{text}\n\nQuestion: {question}"
+            response = client.chat.completions.create(
+                model="gpt-3.5-turbo",
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0
+            )
+            answer = response.choices[0].message.content
+            return Response({"answer": answer})
+        except Exception as e:
+            return Response({"error": f"OpenAI API error: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 def ping(request):
     return JsonResponse({"message": "DocGPT backend is running!"})
@@ -64,5 +72,19 @@ def test_view(request):
 
 class DocumentUploadView(APIView):
     def post(self, request, *args, **kwargs):
-        # handle file upload here
-        return Response({"message": "File uploaded successfully"}, status=status.HTTP_200_OK)
+        if 'document' not in request.FILES:
+            return Response({"error": "No file provided"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        file = request.FILES['document']
+        
+        # Create document instance
+        document = Document.objects.create(
+            title=file.name,
+            file=file
+        )
+        
+        serializer = DocumentSerializer(document)
+        return Response({
+            "message": "File uploaded successfully",
+            "document": serializer.data
+        }, status=status.HTTP_201_CREATED)

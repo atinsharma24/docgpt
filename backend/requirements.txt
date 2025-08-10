@@ -2,6 +2,11 @@ Django>=5.0
 djangorestframework
 celery
 redis
-openai
+openai>=1.0.0
 langchain
-psycopg2-binary  # PostgreSQL driver
+psycopg2-binary
+PyPDF2
+python-dotenv
+django-cors-headers
+chromadb
+sentence-transformers
