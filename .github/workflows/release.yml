@@ -1,0 +1,111 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: DocGPT Assistant ${{ github.ref }}
+        body: |
+          ## 🚀 DocGPT Assistant Release
+          
+          **Built by Atin Sharma**
+          
+          ### Features
+          - 🤖 AI-powered document question answering
+          - 📄 PDF document processing and storage
+          - 🔍 Semantic search with ChromaDB vector store
+          - 🆓 Completely free - uses local Ollama LLM models
+          - 📱 Modern responsive React UI
+          - 🐳 Docker containerized deployment
+          - 🔄 Robust fallback system for reliability
+          
+          ### Quick Start with Docker
+          ```bash
+          # Pull and run the Docker image
+          docker pull ghcr.io/atinsharma24/docgpt:latest
+          docker run -p 8000:8000 -p 11434:11434 ghcr.io/atinsharma24/docgpt:latest
+          ```
+          
+          ### Manual Installation
+          ```bash
+          # Clone repository
+          git clone https://github.com/atinsharma24/docgpt.git
+          cd docgpt-assistant
+          
+          # Run with Docker Compose
+          docker-compose up --build
+          ```
+          
+          ### Access Application
+          - **Frontend**: http://localhost:8000
+          - **API**: http://localhost:8000/api/
+          
+          ### System Requirements
+          - 4GB+ RAM (for AI models)
+          - 10GB+ disk space
+          - Docker and Docker Compose
+          
+          ### What's New
+          - Complete DocGPT implementation
+          - Ollama integration with multiple model fallbacks
+          - Modern React UI with document management
+          - Comprehensive error handling
+          - Production-ready deployment configurations
+          
+          See [DEPLOYMENT.md](https://github.com/atinsharma24/docgpt/blob/main/DEPLOYMENT.md) for detailed deployment instructions.
+        draft: false
+        prerelease: false
+
+  build-assets:
+    needs: create-release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Create source archive
+      run: |
+        git archive --format=tar.gz --prefix=docgpt-assistant-${{ github.ref_name }}/ HEAD > docgpt-assistant-${{ github.ref_name }}-source.tar.gz
+        git archive --format=zip --prefix=docgpt-assistant-${{ github.ref_name }}/ HEAD > docgpt-assistant-${{ github.ref_name }}-source.zip
+
+    - name: Upload Release Assets
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ needs.create-release.outputs.upload_url }}
+        asset_path: ./docgpt-assistant-${{ github.ref_name }}-source.tar.gz
+        asset_name: docgpt-assistant-${{ github.ref_name }}-source.tar.gz
+        asset_content_type: application/gzip
+
+    - name: Upload Release Assets (ZIP)
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ needs.create-release.outputs.upload_url }}
+        asset_path: ./docgpt-assistant-${{ github.ref_name }}-source.zip
+        asset_name: docgpt-assistant-${{ github.ref_name }}-source.zip
+        asset_content_type: application/zip
