@@ -1,12 +1,28 @@
-Django>=5.0
-djangorestframework
-celery
-redis
-openai>=1.0.0
-langchain
-psycopg2-binary
-PyPDF2
-python-dotenv
-django-cors-headers
-chromadb
-sentence-transformers
+# DocGPT Assistant - Backend Dependencies
+# Core Django Framework
+Django>=5.0,<6.0
+djangorestframework>=3.14.0,<4.0
+django-cors-headers>=4.3.0,<5.0
+
+# Database Drivers
+psycopg2-binary>=2.9.0,<3.0  # PostgreSQL driver
+# For development, you can use SQLite (included with Django)
+
+# AI and Machine Learning
+openai>=1.0.0,<2.0  # OpenAI API client
+langchain>=0.1.0,<1.0  # AI framework
+sentence-transformers>=2.2.0,<3.0  # Text embeddings
+
+# Vector Database
+chromadb>=0.4.0,<1.0  # Vector store
+
+# Document Processing
+PyPDF2>=3.0.0,<4.0  # PDF text extraction
+
+# Background Task Processing
+celery>=5.3.0,<6.0  # Task queue
+redis>=4.5.0,<5.0  # Message broker
+
+# HTTP and Utilities
+requests>=2.31.0,<3.0  # HTTP client
+python-dotenv>=1.0.0,<2.0  # Environment variables
